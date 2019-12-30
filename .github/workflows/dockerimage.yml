@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on: 
+  push:
+      branches:
+        - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: build 
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_HUB: ${{ secrets.DOCKER_HUB }}
+      run: |
+        ls -l
+        echo "Docker login"
+        docker login -u $DOCKER_USERNAME -p $DOCKER_HUB
+        echo "Running build"
+        docker build . --file Dockerfile -t pavelinux/devops:latest
+        echo "Pushing image"
+        docker push pavelinux/devops:latest
+        echo "Finished!"
